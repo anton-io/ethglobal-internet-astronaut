@@ -1,0 +1,8 @@
+# Do not track these files on git:
+
+.idea
+*.pyc
+output/
+
+# Store private key.
+.pkey
