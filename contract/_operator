@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+
+# This file contains a multitude of functions to operate the smart contract.
+
+from config import *
+
+
+def _exec_transaction(transaction):
+    # Helper function to execute the transaction.
+    try:
+        # Sign the transaction with your private key
+        signed_transaction = web3.eth.account.sign_transaction(transaction, PKEY)
+
+        # Send the signed transaction
+        tx_hash = web3.eth.send_raw_transaction(signed_transaction.rawTransaction)
+
+        # Wait for the transaction to be mined
+        receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+        print(f"receipt: {receipt}")
+        print(f"Transaction successful with hash: {tx_hash.hex()}")
+
+    except Exception as e:
+        print(f"Error with transaction: {e}")
+
+
+def get_lottery_active():
+    try:
+        # Call the 'getLotteryActive' to check lottery state.
+        lottery_active = contract.functions.lotteryActive().call()
+        print(f"Current lottery is active: {lottery_active}")
+        return lottery_active
+    except Exception as e:
+        print(f"Error reading active state: {e}")
+
+
+def set_lottery_active(active=True):
+    transaction = contract.functions.set_lottery_active(active).build_transaction({
+        'gas': 30000000,                 # Gas limit.
+        'gasPrice': web3.eth.gas_price,  # Current gas price.
+        'nonce': web3.eth.get_transaction_count(user_address),
+        'from': user_address,
+    })
+    _exec_transaction(transaction)
+
+
+def mint_star():
+    transaction = contract.functions.mintStar().build_transaction({
+        'gas': 30000000,                 # Gas limit.
+        'gasPrice': web3.eth.gas_price,  # Current gas price.
+        'nonce': web3.eth.get_transaction_count(user_address),
+        'from': user_address,
+        'value': star_price              # Ether to send with the transaction.
+    })
+    _exec_transaction(transaction)
+
+
+def select_winner():
+    transaction = contract.functions.selectWinner().build_transaction({
+        'gas': 30000000,                 # Gas limit.
+        'gasPrice': web3.eth.gas_price,  # Current gas price.
+        'nonce': web3.eth.get_transaction_count(user_address),
+        'from': user_address,
+    })
+    _exec_transaction(transaction)
+
+
+def get_winner():
+    try:
+        # Call the 'winner' function to get the current winner address
+        winner_address = contract.functions.winner().call()
+        print(f"Current winner address: {winner_address}")
+        return winner_address
+    except Exception as e:
+        print(f"Error reading winner: {e}")
+
+
+def funds_withdraw():
+    transaction = contract.functions.withdraw().build_transaction({
+        'gas': 30000000,                 # Gas limit.
+        'gasPrice': web3.eth.gas_price,  # Current gas price.
+        'nonce': web3.eth.get_transaction_count(user_address),
+        'from': user_address,
+    })
+    _exec_transaction(transaction)
+
+
+def funds_refund():
+    transaction = contract.functions.refundAll().build_transaction({
+        'gas': 30000000,                 # Gas limit.
+        'gasPrice': web3.eth.gas_price,  # Current gas price.
+        'nonce': web3.eth.get_transaction_count(user_address),
+        'from': user_address,
+    })
+    _exec_transaction(transaction)
+
+
+def funds_claim():
+    transaction = contract.functions.claimRefund().build_transaction({
+        'gas': 30000000,                 # Gas limit.
+        'gasPrice': web3.eth.gas_price,  # Current gas price.
+        'nonce': web3.eth.get_transaction_count(user_address),
+        'from': user_address,
+    })
+    _exec_transaction(transaction)
+
+
+def validate_core_functions():
+    get_lottery_active()
+    set_lottery_active()
+    get_lottery_active()
+    get_winner()
+    mint_star()
+    get_winner()
+    select_winner()
+    get_winner()
+    funds_withdraw()
+
+
+def validate_failure_mode():
+    get_lottery_active()
+    set_lottery_active()
+    get_lottery_active()
+    get_winner()
+    mint_star()
+    mint_star()
+    get_winner()
+    select_winner()
+    get_winner()
+    funds_refund()
+    funds_claim()
+
+
+def main():
+    pass
+    # Enable/disable as a way to test:
+    # validate_core_functions()
+    # validate_failure_mode()
+
+
+if __name__ == "__main__":
+    main()
+
+
+

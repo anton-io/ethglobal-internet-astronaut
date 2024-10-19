@@ -18,7 +18,7 @@ contract InternetAstronaut is ERC721Enumerable, Ownable(msg.sender) {
     constructor(
         uint256 _maxStars,
         uint256 _starPrice
-    ) ERC721("AstronautLottery", "STAR") {
+    ) ERC721("InternetAstronaut", "STAR") {
         maxStars = _maxStars;
         starPrice = _starPrice;
         lotteryActive = false;
@@ -59,15 +59,13 @@ contract InternetAstronaut is ERC721Enumerable, Ownable(msg.sender) {
 
     // Refund function for everyone who minted stars.
     function refundAll() public onlyOwner {
-        require(lotteryActive, "Lottery is not active");
+        require(!lotteryActive, "Lottery is still active");
 
         // Refund all star holders the price they paid.
         for (uint256 i = 0; i < totalSupply(); i++) {
             address starHolder = ownerOf(i);
             refunds[starHolder] += starPrice;
         }
-
-        lotteryActive = false; // End the lottery.
     }
 
     // Function for users to claim their refund.

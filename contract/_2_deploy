@@ -2,27 +2,7 @@
 
 # Deploy the smart contract.
 
-import os
-import eth_account
-from web3 import Web3
-
-DIR_THIS = os.path.abspath(os.path.dirname(__file__))
-
-
-# Configuration:
-CONTRACT = f"InternetAstronaut.sol"
-CONTRACT_BIN = f"{DIR_THIS}/src/output/src_InternetAstronaut_sol_HelloAstronaut.bin"
-CONTRACT_ABI = f"{DIR_THIS}/src/output/src_InternetAstronaut_sol_HelloAstronaut.abi"
-
-# This RPC defines where to deploy.
-RPC_URL = 'https://testnet.evm.nodes.onflow.org'
-
-
-try:
-    PKEY = open(f"{DIR_THIS}/.pkey").read()
-except Exception as _:
-    print(f"Add private key to {DIR_THIS}/.pkey")
-    exit(-1)
+from config import *
 
 
 def deploy_contract():
@@ -51,9 +31,13 @@ def deploy_contract():
     nonce = w3.eth.get_transaction_count(account.address)
 
     # Build the transaction for deploying the contract.
-    transaction = contract.constructor().build_transaction({
+    stars_total = 1000
+    stars_price = w3.to_wei(2, 'ether')
+
+    transaction = contract.constructor(stars_total, stars_price).build_transaction({
         'nonce': nonce,
-        'gasPrice': w3.to_wei('20', 'gwei')
+        'gasPrice': w3.eth.gas_price,
+        'from': addr_mine
     })
 
     # Sign the transaction with the private key.

@@ -1,1 +1,100 @@
-Hello Internet Astronaut!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mint a Star</title>
+</head>
+<body>
+<button id="connectButton">Connect Wallet</button>
+<button id="mintButton" disabled>Mint Star</button>
+<p id="walletAddress"></p>
+<p id="mintedTransaction"></p>
+
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<script>
+
+  // RPC URL.
+  const RPC_URL = '<CONFIGURE>';
+
+  // Contract's address.
+  const contractAddress = '<CONFIGURE>';
+
+  // Contract's ABI (Application Binary Interface).
+  const contractABI = [
+    // Your contract ABI (this is just a placeholder).
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "mintStar",
+      "outputs": [],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ];
+
+  let userAddress;
+
+  // Connect to MetaMask wallet
+  async function connectWallet() {
+    if (window.ethereum) {
+      try {
+        // Request access to user's MetaMask accounts.
+        const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+        userAddress = accounts[0]; // Get the first account (MetaMask supports multiple)
+        document.getElementById('walletAddress').innerText = `Wallet Address: ${userAddress}`;
+
+        // Enable the mint button once the wallet is connected.
+        document.getElementById('mintButton').disabled = false;
+      } catch (error) {
+        console.error("Error connecting to MetaMask", error);
+      }
+    } else {
+      alert("MetaMask is not installed. Please install MetaMask and try again.");
+    }
+  }
+
+  // Mint a Star.
+  async function mintStar() {
+    try {
+      document.getElementById('mintedTransaction').innerText = '';
+      // Connect to provider.
+      const web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL));
+
+      // Initialize the contract.
+      const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+      // Amount of Ether (in wei) you need to send to mint the Star..
+      const starPrice = web3.utils.toWei('2');
+
+      // Send transaction to mint the star.
+      const transactionParameters = {
+        to: contractAddress,                          // The contract address.
+        from: userAddress,                            // The sender's address.
+        value: web3.utils.numberToHex(starPrice),     // The value in wei.
+        gas: web3.utils.numberToHex('3000000'),       // Estimated gas limit.
+        data: contract.methods.mintStar().encodeABI() // Encoded ABI call.
+      };
+
+      document.getElementById('mintedTransaction').innerText = `Minting...`;
+      // Request user's signature and send the transaction.
+      const txHash = await ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [transactionParameters],
+      });
+
+      console.log('Transaction hash:', txHash);
+      document.getElementById('mintedTransaction').innerText = `Minted Tx: ${txHash}`;
+
+    } catch (error) {
+      console.error('Error minting star:', error);
+    }
+  }
+
+  // Hook up the buttons.
+  document.getElementById('connectButton').addEventListener('click', connectWallet);
+  document.getElementById('mintButton').addEventListener('click', mintStar);
+</script>
+</body>
+</html>
