@@ -34,7 +34,7 @@ def get_lottery_active():
 
 
 def set_lottery_active(active=True):
-    transaction = contract.functions.set_lottery_active(active).build_transaction({
+    transaction = contract.functions.setLotteryActive(active).build_transaction({
         'gas': 30000000,                 # Gas limit.
         'gasPrice': web3.eth.gas_price,  # Current gas price.
         'nonce': web3.eth.get_transaction_count(user_address),
@@ -62,6 +62,16 @@ def select_winner():
         'from': user_address,
     })
     _exec_transaction(transaction)
+
+
+def get_total_supply():
+    try:
+        # Call the 'totalSupply' function.
+        total_supply = contract.functions.totalSupply().call()
+        print(f"Current total supply is: {total_supply}")
+        return total_supply
+    except Exception as e:
+        print(f"Error reading total supply: {e}")
 
 
 def get_winner():
@@ -109,6 +119,8 @@ def validate_core_functions():
     set_lottery_active()
     get_lottery_active()
     get_winner()
+    mint_star()
+    mint_star()
     mint_star()
     get_winner()
     select_winner()

@@ -1,6 +1,6 @@
 ## Internet Astronaut 
 
-**The Global Web3 Lottery for Space Exploration.**
+**A Web3 Lottery for Space Exploration.**
 
 Internet Astronaut is an innovative Web3-powered lottery that gives participants a once-in-a-lifetime opportunity to win a chance to become an astronaut.
 
@@ -83,12 +83,9 @@ Due to limited amount of time, and the priority to get something end-to-end work
 
 Yhe following is a list of such ideas and features:
 ```
-[ ] Better random function to select winner.
-[ ] Extend contract to issue logs for important events.
-    [ ] Selecting a winner.
-    [ ] Minting a new start.
-    [ ] Changing active state.
+[x] Better random function to select winner.
+[x] Extend contract to issue logs for important events.
+    [x] Selecting a winner.
 [ ] Extend contract to allow multiple mints.
-[ ] Extend contract to list stars by address.
 [ ] Store using a stable coin like USDC to increase predicability. 
 ```

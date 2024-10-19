@@ -15,6 +15,9 @@ contract InternetAstronaut is ERC721Enumerable, Ownable(msg.sender) {
 
     mapping(address => uint256) public refunds;
 
+    // Log events.
+    event WinnerSelected(uint64 randomIndex, address indexed winner);
+
     constructor(
         uint256 _maxStars,
         uint256 _starPrice
@@ -51,10 +54,11 @@ contract InternetAstronaut is ERC721Enumerable, Ownable(msg.sender) {
 
         // Use block hash and total supply to pseudo-randomly select a winner.
         // In the future, on in live production, this should be a more robust random function:
-        uint256 randomIndex = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, totalSupply()))) % totalSupply();
+        uint64 randomIndex = getRandomInRange(0, uint64(totalSupply()));
         winner = ownerOf(randomIndex);
-
         lotteryActive = false; // End the lottery.
+
+        emit WinnerSelected(randomIndex, winner);
     }
 
     // Refund function for everyone who minted stars.
@@ -86,4 +90,17 @@ contract InternetAstronaut is ERC721Enumerable, Ownable(msg.sender) {
         (bool success, ) = owner().call{value: contractBalance}("");
         require(success, "Withdrawal failed");
     }
+
+    // Generate a random number between min and max.
+    function getRandomInRange(uint64 min, uint64 max) public view returns (uint64) {
+        address cadenceArch = 0x0000000000000000000000010000000000000001;
+
+        // Static call to the Cadence Arch contract's revertibleRandom function
+        (bool ok, bytes memory data) = cadenceArch.staticcall(abi.encodeWithSignature("revertibleRandom()"));
+        require(ok, "Failed to fetch a random number through Cadence Arch");
+        uint64 randomNumber = abi.decode(data, (uint64));
+
+        // Return the number in the specified range
+        return (randomNumber % (max + 1 - min)) + min;
+	}
 }
