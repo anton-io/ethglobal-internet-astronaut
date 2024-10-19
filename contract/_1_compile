@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Compile the smart contract and produce abi/bin files.
+
 import os
 import subprocess
 DIR_THIS = os.path.abspath(os.path.dirname(__file__))
@@ -30,6 +32,9 @@ def contract_compile(contract=CONTRACT):
         'run',
         '-v', f"{DIR_THIS}/src:/src",
         'solc',
+        '--base-path', '.',
+        '--include-path', 'node_modules/',
+        '--include-path', '/usr/local/lib/node_modules/',
         '--optimize',
         '-o', '/src/output',
         '--abi', '--bin',

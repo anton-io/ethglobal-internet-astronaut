@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Deploy the smart contract.
+
 import os
 import eth_account
 from web3 import Web3
@@ -12,9 +14,13 @@ CONTRACT = f"InternetAstronaut.sol"
 CONTRACT_BIN = f"{DIR_THIS}/src/output/src_InternetAstronaut_sol_HelloAstronaut.bin"
 CONTRACT_ABI = f"{DIR_THIS}/src/output/src_InternetAstronaut_sol_HelloAstronaut.abi"
 
+# This RPC defines where to deploy.
+RPC_URL = 'https://testnet.evm.nodes.onflow.org'
+
+
 try:
     PKEY = open(f"{DIR_THIS}/.pkey").read()
-except:
+except Exception as _:
     print(f"Add private key to {DIR_THIS}/.pkey")
     exit(-1)
 
@@ -28,7 +34,7 @@ def deploy_contract():
     print(f"My address is: {addr_mine}")
 
     # Connect to blockchain RPC.
-    w3 = Web3(Web3.HTTPProvider('https://testnet.evm.nodes.onflow.org'))
+    w3 = Web3(Web3.HTTPProvider(RPC_URL))
 
     if not w3.is_connected():
         print("Unable to connect to blockchain RPC.")
