@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$1" = "bash" ]; then
-  exec bash
+if [ "$1" = "/bin/bash" ]; then
+  exec /bin/bash
 else
   # Default command.
   umask 000
