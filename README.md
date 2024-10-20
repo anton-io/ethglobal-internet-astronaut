@@ -70,9 +70,9 @@ Assuming You Are Using the Flow Blockchain:
 5. **Interact with the Smart Contract:**
    - Explore the available functions within the contract by reviewing the scripts in:
      ```bash
-     ./contract/_operator
+     ./contract/operator
      ```
-   - Choose the functions you want to interact with or test.
+   - Choose the functions you want to interact with or test. These functions include the ability to enable/disable minting, select a random winner, withdraw funds, or refund funds in case of any issues. 
 
 6. **Customize the Frontend:**
    - Modify or extend the frontend by editing `./www/root/index.html` to create the desired user interactions or experiences.
