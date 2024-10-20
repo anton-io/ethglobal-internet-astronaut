@@ -8,6 +8,11 @@ By leveraging blockchain technology and cryptocurrency, the lottery is fully tra
 
 The central idea is to sell digital tickets, called "Stars," to raise sufficient funds, and once all Stars are sold, a winner is chosen. The winner secures a spot in an astronaut training program, turning their dream of space travel into reality.
 
+### Live Demo
+
+Currently, there is a live demo available at https://InternetAstronaut.com. This demo uses a Flow testnet, that provides free tokes through their faucet as described below. 
+
+
 ### How does it work
 
 1. **The Stars (NFTs as Tickets):**
@@ -77,15 +82,10 @@ Assuming You Are Using the Flow Blockchain:
      ```
 
     
-# Improvement ideas
+### Improvement ideas
 
-Due to limited amount of time, and the priority to get something end-to-end working with the core functionality (of allowing the raise of capital to fund and award a winner with a space ticket), many improvements were left to be implemented at a later stage. 
-
-Yhe following is a list of such ideas and features:
+Following is a list ideas and features that could improve user experience: 
 ```
-[x] Better random function to select winner.
-[x] Extend contract to issue logs for important events.
-    [x] Selecting a winner.
-[ ] Extend contract to allow multiple mints.
-[ ] Store using a stable coin like USDC to increase predicability. 
+[ ] Extend contract to allow multiple simultaneous mints.
+[ ] Store using a stable coin like USDC to increase price predictability. 
 ```
