@@ -54,16 +54,6 @@ def mint_star():
     _exec_transaction(transaction)
 
 
-def select_winner():
-    transaction = contract.functions.selectWinner().build_transaction({
-        'gas': 30000000,                 # Gas limit.
-        'gasPrice': web3.eth.gas_price,  # Current gas price.
-        'nonce': web3.eth.get_transaction_count(user_address),
-        'from': user_address,
-    })
-    _exec_transaction(transaction)
-
-
 def get_total_supply():
     try:
         # Call the 'totalSupply' function.
@@ -74,12 +64,42 @@ def get_total_supply():
         print(f"Error reading total supply: {e}")
 
 
+def get_max_supply():
+    try:
+        # Call the 'totalSupply' function.
+        max_supply = contract.functions.maxStars().call()
+        print(f"Maximum stars supply is: {max_supply}")
+        return max_supply
+    except Exception as e:
+        print(f"Error reading max_supply: {e}")
+
+
+def select_winner():
+    transaction = contract.functions.selectWinner().build_transaction({
+        'gas': 30000000,                 # Gas limit.
+        'gasPrice': web3.eth.gas_price,  # Current gas price.
+        'nonce': web3.eth.get_transaction_count(user_address),
+        'from': user_address,
+    })
+    _exec_transaction(transaction)
+
+
 def get_winner():
     try:
         # Call the 'winner' function to get the current winner address
         winner_address = contract.functions.winner().call()
         print(f"Current winner address: {winner_address}")
         return winner_address
+    except Exception as e:
+        print(f"Error reading winner: {e}")
+
+
+def get_balance(addr=user_address):
+    try:
+        # Call the 'winner' function to get the current winner address
+        balance = contract.functions.balanceOf(addr).call()
+        print(f"Balance of address {addr} is {balance}")
+        return balance
     except Exception as e:
         print(f"Error reading winner: {e}")
 

@@ -31,10 +31,7 @@ def deploy_contract():
     nonce = w3.eth.get_transaction_count(account.address)
 
     # Build the transaction for deploying the contract.
-    stars_total = 1000
-    stars_price = w3.to_wei(2, 'ether')
-
-    transaction = contract.constructor(stars_total, stars_price).build_transaction({
+    transaction = contract.constructor(stars_total, star_price).build_transaction({
         'nonce': nonce,
         'gasPrice': w3.eth.gas_price,
         'from': addr_mine
