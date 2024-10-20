@@ -3,98 +3,380 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mint a Star</title>
+  <title>Internet Astronaut - Mint Your Star</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 20px;
+      font-family: system-ui;
+      font-size: 1.1em;
+      font-weight: 400;
+      font-style: normal;
+      overflow-x: hidden;
+      overscroll-behavior-y: none;
+    }
+
+    #container {
+      max-width: 500px;
+      margin: 0 auto 0 auto;
+    }
+
+    .section {
+      margin-top: 29px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      max-height: 300px;
+    }
+
+    h2 {
+      margin: 20px 0 20px 0;
+    }
+
+    .star-container {
+      position: fixed;
+      width: 100%;
+      height: 1vh;
+      left: 0;
+      top: 0;
+      min-height: 100%;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite;
+    }
+
+    @keyframes twinkle {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    a:link, a:visited, a:hover, a:active {
+      color: #3a4bf8;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #3fe000;
+    }
+
+    .corner-ribbon {
+      width: 400px;
+      background: #e43;
+      position: absolute;
+      top: 25px;
+      left: -50px;
+      text-align: center;
+      line-height: 50px;
+      letter-spacing: 1px;
+      color: #f0f0f0;
+      transform: rotate(-45deg);
+      -webkit-transform: rotate(-45deg);
+      overflow: hidden;
+    }
+
+    .corner-ribbon.shadow {
+      box-shadow: 0 0 3px rgba(0, 0, 0, .3);
+    }
+
+    .corner-ribbon.top-right {
+      right: -150px;
+      left: auto;
+      transform: rotate(45deg);
+      -webkit-transform: rotate(46deg);
+      overflow: hidden;
+    }
+
+    .corner-ribbon.blue {
+      background: #39d;
+    }
+  </style>
 </head>
 <body>
-<button id="connectButton">Connect Wallet</button>
-<button id="mintButton" disabled>Mint Star</button>
-<p id="walletAddress"></p>
-<p id="mintedTransaction"></p>
+<!-- Test Net Banner -->
+<div class="corner-ribbon top-right sticky blue">Using Testnet</div>
+<div class="star-container"></div>
+<div id="container">
+  <!-- Hero Section -->
+  <header id="hero">
+    <div class="container">
+      <h1>Internet Astronaut</h1>
+      <p>
+        Join the cosmic lottery, where each star is unique and holds
+        a chance of going into space, and becoming the
+        first internet astronaut!
+      </p>
+    </div>
+  </header>
 
-<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-<script>
+  <!-- About Section -->
+  <section id="about" class="section">
+    <div class="container">
+      <h2>About Internet Astronaut</h2>
+      <p>
+        Internet Astronaut uses Web3 and blockchain to bring transparency,
+        accessibility, and fairness to an exciting global lottery.
+      </p>
+      <p>
+        It merges the aspirations of space exploration with the decentralized
+        nature of Web3, creating a project where innovation and adventure collide.
+      </p>
+      <p>
+        It uses Flow's secure, native on-chain randomness to ensure fairness.
+        Each star you mint has an equal chance of being selected for the next galactic lottery.
+      </p>
+      <p>
+        Buy your star/s, and get a chance to fulfill the
+        ultimate dream — becoming an astronaut!
+      </p>
+    </div>
+  </section>
 
-  // RPC URL.
-  const RPC_URL = '<CONFIGURE>';
+  <!-- Minting Section -->
+  <section id="howItWorks" class="section">
+    <div class="container">
+      <h2>How It Works</h2>
+      <ol>
+        <li>Connect your wallet.</li>
+        <li>Mint your unique star/s.</li>
+        <li>Enter the cosmic lottery.</li>
+        <li>Wait for the draw.</li>
+      </ol>
+      <p class="cost-info">Cost per Star:
+        <span id="cost">
+          <a href="https://flow.com/use-flow/flow-token" target="_blank">
+            2 FLOW
+          </a>
+          (~$1 as of Oct/2024)
+        </span>
+      </p>
+      <button id="connectWallet">Connect Wallet</button>
+      <button id="mintStar" disabled>Mint a Star</button>
+      <p id="walletAddress"></p>
+      <p id="mintedTransaction"></p>
+    </div>
+  </section>
 
-  // Contract's address.
-  const contractAddress = '<CONFIGURE>';
+  <!-- Status Section -->
+  <section id="status" class="section" style="display: none">
+    <div class="container">
+      <h2>Current status</h2>
+      <p id="pbalance" style="display: none">
+        You have <span id="balance"></span> stars.
+      </p>
+      <p>
+        <span id="starsMinted"></span> stars have been minted
+        from a maximum of <span id="starsTotal"></span>.
+      </p>
+      <p>
+        Using the contract deployed at: <span id="contract"></span>
+      </p>
+    </div>
+  </section>
 
-  // Contract's ABI (Application Binary Interface).
-  const contractABI = [
-    // Your contract ABI (this is just a placeholder).
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "mintStar",
-      "outputs": [],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
-    }
-  ];
+  <!-- Roadmap -->
+  <section id="roadmap" class="section">
+    <div class="container">
+      <h2>Our Timeline</h2>
+      <ul>
+        <li>Phase 1: Launch of the Star Minting platform.</li>
+        <li>Phase 2: Wait enough time for stars to be acquired.</li>
+        <li>Phase 3: Select a winner from the pool.</li>
+        <li>Phase 4: Procure the best launch opportunity.</li>
+        <li>Phase 5: Launch a lucky star owner into space.</li>
+      </ul>
+    </div>
+  </section>
 
-  let userAddress;
+  <!-- Roadmap -->
+  <section id="shotout" class="section">
+    <div class="container">
+      <h2>Shout-outs</h2>
+      <p>
+        This project was developed during ETHGlobal San Franscisco 2024 with the support of:
+      </p>
+      <img src="ethglobal.png" width="35%">&nbsp;&nbsp; <img src="flow.png" width="25%">
+    </div>
+  </section>
 
-  // Connect to MetaMask wallet
-  async function connectWallet() {
-    if (window.ethereum) {
-      try {
-        // Request access to user's MetaMask accounts.
-        const accounts = await ethereum.request({method: 'eth_requestAccounts'});
-        userAddress = accounts[0]; // Get the first account (MetaMask supports multiple)
-        document.getElementById('walletAddress').innerText = `Wallet Address: ${userAddress}`;
+  <!-- Footer -->
+  <footer>
+    <div class="container" style="margin-top: 50px">
+      <p>&copy; 2024 Internet Astronaut</p>
+      <div id="relatedLinks" style="float: left">
+        <a href="https://x.com/roldao" target="_blank">X</a> |
+        <a href="https://github.com/anton-io/ethglobal-internet-astronaut" target="_blank">GitHub</a>
+      </div>
+      <div id="legalLinks" style="float: right">
+        <a href="#">Terms</a> |
+        <a href="#">Privacy</a>
+      </div>
+    </div>
+  </footer>
+  <br>
 
-        // Enable the mint button once the wallet is connected.
-        document.getElementById('mintButton').disabled = false;
-      } catch (error) {
-        console.error("Error connecting to MetaMask", error);
+  <!-- Scripts -->
+  <script src="stars.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  <script>
+    // RPC URL.
+    const RPC_URL = 'https://testnet.evm.nodes.onflow.org';
+
+    // Contract's address.
+    const contractAddress = '0x08db0B336C6e4bb61C469b40F2E80a7A05AAd766';
+
+    // Contract's ABI (Application Binary Interface).
+    const contractABI = [
+      // Your contract ABI (this is just a placeholder).
+      {
+        "constant": false,
+        "inputs": [],
+        "name": "mintStar",
+        "outputs": [],
+        "payable": true,
+        "stateMutability": "payable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "maxStars",
+        "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "totalSupply",
+        "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs":[{"internalType":"address","name":"owner","type":"address"}],
+        "name":"balanceOf",
+        "outputs":[{"internalType":"uint256","name":"","type":"uint256"}],
+        "stateMutability":"view","type":"function"
       }
-    } else {
-      alert("MetaMask is not installed. Please install MetaMask and try again.");
+    ];
+
+    let userAddress;
+    // Connect to provider.
+    let web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL));
+    // Initialize the contract.
+    let contract = new web3.eth.Contract(contractABI, contractAddress);
+    // Amount of Ether (in wei) you need to send to mint the Star.
+    const starPrice = web3.utils.toWei('2');
+
+    // Shortcuts
+    let bWallet = document.getElementById('connectWallet')
+    let bMint = document.getElementById('mintStar')
+
+
+    // Connect to MetaMask wallet
+    async function connectWallet() {
+      if (window.ethereum) {
+        try {
+          // Request access to user's MetaMask accounts.
+          const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+          userAddress = accounts[0]; // Get the first account (MetaMask supports multiple)
+          document.getElementById('walletAddress').innerText = `Wallet Address: ${userAddress}`;
+
+          // Enable the mint button once the wallet is connected.
+          bMint.disabled = false;
+          updateBalance();
+        } catch (error) {
+          console.error("Error connecting to MetaMask", error);
+        }
+      } else {
+        alert("MetaMask is not installed. Please install MetaMask and try again.");
+      }
     }
-  }
 
-  // Mint a Star.
-  async function mintStar() {
-    try {
-      document.getElementById('mintedTransaction').innerText = '';
-      // Connect to provider.
-      const web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL));
+    // Mint a Star.
+    async function mintStar() {
+      try {
+        document.getElementById('mintedTransaction').innerText = '';
 
-      // Initialize the contract.
-      const contract = new web3.eth.Contract(contractABI, contractAddress);
+        // Send transaction to mint the star.
+        const transactionParameters = {
+          to: contractAddress,                          // The contract address.
+          from: userAddress,                            // The sender's address.
+          value: web3.utils.numberToHex(starPrice),     // The value in wei.
+          gas: web3.utils.numberToHex('3000000'),       // Estimated gas limit.
+          data: contract.methods.mintStar().encodeABI() // Encoded ABI call.
+        };
 
-      // Amount of Ether (in wei) you need to send to mint the Star..
-      const starPrice = web3.utils.toWei('2');
+        document.getElementById('mintedTransaction').innerText = `Minting...`;
+        // Request user's signature and send the transaction.
+        const txHash = await ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [transactionParameters],
+        });
 
-      // Send transaction to mint the star.
-      const transactionParameters = {
-        to: contractAddress,                          // The contract address.
-        from: userAddress,                            // The sender's address.
-        value: web3.utils.numberToHex(starPrice),     // The value in wei.
-        gas: web3.utils.numberToHex('3000000'),       // Estimated gas limit.
-        data: contract.methods.mintStar().encodeABI() // Encoded ABI call.
-      };
+        console.log('Transaction hash:', txHash);
+        document.getElementById('mintedTransaction').innerText = `Minted Tx: ${txHash}`;
+        updateUI();
+        updateBalance();
 
-      document.getElementById('mintedTransaction').innerText = `Minting...`;
-      // Request user's signature and send the transaction.
-      const txHash = await ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [transactionParameters],
-      });
-
-      console.log('Transaction hash:', txHash);
-      document.getElementById('mintedTransaction').innerText = `Minted Tx: ${txHash}`;
-
-    } catch (error) {
-      console.error('Error minting star:', error);
+      } catch (error) {
+        console.error('Error minting star:', error);
+      }
     }
-  }
 
-  // Hook up the buttons.
-  document.getElementById('connectButton').addEventListener('click', connectWallet);
-  document.getElementById('mintButton').addEventListener('click', mintStar);
-</script>
+    // Hook up the buttons.
+    bWallet.addEventListener('click', connectWallet);
+    bMint.addEventListener('click', mintStar);
+
+    // Update UI with current state.
+    function updateBalance(b) {
+      document.getElementById('balance').innerText = b;
+    }
+
+    // Update UI with current state.
+    function updateTotalStars(t) {
+      document.getElementById('starsTotal').innerText = t;
+    }
+
+    function updateMintedStars(t) {
+      document.getElementById('starsMinted').innerText = t;
+      document.getElementById('status').style.display = '';
+    }
+
+    function updateUI() {
+      contract.methods.maxStars().call().then(updateTotalStars);
+      contract.methods.totalSupply().call().then(updateMintedStars);
+      document.getElementById('contract').innerHTML =
+        `<a href="https://evm-testnet.flowscan.io/address/${contractAddress}" target="_blank">` +
+        `${contractAddress}</a>`;
+    }
+    updateUI();
+
+    function updateBalanceUI(b) {
+      document.getElementById('balance').innerText = b;
+      document.getElementById('pbalance').style.display = '';
+    }
+
+    function updateBalance() {
+      contract.methods.balanceOf(userAddress).call().then(updateBalanceUI);
+    }
+    updateUI();
+  </script>
+</div>
 </body>
 </html>
